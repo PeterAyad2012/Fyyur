@@ -169,14 +169,13 @@ def show_venue(venue_id):
     data['upcoming_shows']=[]
     data['past_shows_count']=0
     data['upcoming_shows_count']=0
-    venue_shows=Show.query.filter_by(venue_id=data['id']).all()
+    venue_shows=db.session.query(Show.artist_id.label('artist_id'), Show.start_time.label('start_time'), Artist.name.label('name'),Artist.image_link.label('image_link')).join(Artist).filter(Show.venue_id==data['id']).all()
     if len(venue_shows)>0:
         for venue_show in venue_shows:
             s={}
             s['artist_id']=venue_show.artist_id
-            artist=Artist.query.with_entities(Artist.id, Artist.name, Artist.image_link).filter_by(id=s['artist_id']).first()
-            s['artist_name']=artist.name
-            s['artist_image_link']=artist.image_link
+            s['artist_name']=venue_show.name
+            s['artist_image_link']=venue_show.image_link
             s['start_time']=venue_show.start_time
             if s['start_time']<datetime.now():
                 data['past_shows'].append(s)
@@ -330,14 +329,13 @@ def show_artist(artist_id):
     data['upcoming_shows']=[]
     data['past_shows_count']=0
     data['upcoming_shows_count']=0
-    artist_shows=Show.query.filter_by(artist_id=data['id']).all()
+    artist_shows=db.session.query(Show.venue_id.label('venue_id'), Show.start_time.label('start_time'), Venue.name.label('name'),Venue.image_link.label('image_link')).join(Venue).filter(Show.artist_id==data['id']).all()
     if len(artist_shows)>0:
         for artist_show in artist_shows:
             s={}
             s['venue_id']=artist_show.venue_id
-            venue=Venue.query.with_entities(Venue.id, Venue.name, Venue.image_link).filter_by(id=s['venue_id']).first()
-            s['venue_name']=venue.name
-            s['venue_image_link']=venue.image_link
+            s['venue_name']=artist_show.name
+            s['venue_image_link']=artist_show.image_link
             s['start_time']=artist_show.start_time
             if s['start_time']<datetime.now():
                 data['past_shows'].append(s)
