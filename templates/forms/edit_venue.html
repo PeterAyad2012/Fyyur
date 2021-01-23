@@ -1,0 +1,109 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Edit Venue{% endblock %}
+{% block content %}
+    <div class="form-wrapper">
+        <form class="form" method="post" action="/venues/{{venue.id}}/edit">
+            <h3 class="form-heading">Edit venue <em>{{ venue.name }}</em> <a href="{{ url_for('index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+            <div class="form-group">
+                <label for="name">Name</label>
+                {{ form.name(class_ = 'form-control', value = venue.name, autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label>City & State</label>
+                <div class="form-inline">
+                    <div class="form-group">
+                    {{ form.city(class_ = 'form-control', value = venue.city , placeholder='City', autofocus = true) }}
+                    </div>
+                    <div class="form-group">
+                    {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true, id='state')}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                {{ form.address(class_ = 'form-control', value = venue.address , autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                {{ form.phone(class_ = 'form-control', value = venue.phone , placeholder='xxx-xxx-xxxx', autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label for="genres">Genres</label>
+                <small>Ctrl+Click to select multiple</small>
+                {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label for="genres">Image Link</label>
+                {{ form.image_link(class_ = 'form-control', placeholder='http://', value = venue.image_link , autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label for="genres">Facebook Link</label>
+                {{ form.facebook_link(class_ = 'form-control', placeholder='http://', value = venue.facebook_link , autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label for="genres">Website</label>
+                {{ form.website(class_ = 'form-control', placeholder='http://', value = venue.website , autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label>Seeking Talent</label>
+                {{ form.seeking_talent(class_ = 'form-control', autofocus = true) }}
+            </div>
+            <div class="form-group">
+                <label>Talent Description</label>
+                {{ form.talent_description(class_ = 'form-control', placeholder='Description', value = venue.talent_description , autofocus = true) }}
+            </div>
+            <input type="submit" value="Edit Venue" class="btn btn-primary btn-lg btn-block">
+        </form>
+        <script>
+            //select the venue state
+            var state=document.getElementById('state');
+            var selected_state = '{{venue.state}}';
+            for(i=0;i<state.options.length;i++){
+                if (state.options[i].value==selected_state){
+                    state.options[i].setAttribute('selected', 'selected');
+                }
+            }
+            
+            //select the genres
+            var genres = document.getElementById('genres')
+            var selected_genres = '{{venue.genres}}';
+            selected_genres=selected_genres.replace(/&#34;/g,'');
+            selected_genres=selected_genres.replace('{','');
+            selected_genres=selected_genres.replace('}','');
+            genres_list=selected_genres.split(',')
+            for(i=0;i<genres.options.length;i++){
+                for(j=0;j<genres_list.length;j++){
+                    if (genres.options[i].value==genres_list[j]){
+                        genres.options[i].setAttribute('selected', 'selected');
+                    }
+                }
+            }
+            
+            //select the venue seeking_talent
+            var talent=document.getElementById('seeking_talent');
+            var selected_talent = '{{venue.seeking_talent}}';
+            for(i=0;i<talent.options.length;i++){
+                if (talent.options[i].value==selected_talent){
+                    talent.options[i].setAttribute('selected', 'selected');
+                }
+            }
+            
+            //description control
+            var desc=document.getElementById('talent_description');
+            var seeking_talent=document.getElementById('seeking_talent');
+            if (seeking_talent.value != 'True'){
+                desc.value='';
+                desc.setAttribute('disabled','disabled');
+            }
+            seeking_talent.onchange=function(e){
+                if (seeking_talent.value == 'True'){
+                    desc.removeAttribute('value');
+                    desc.removeAttribute('disabled');
+                }else{
+                    desc.value='';
+                    desc.setAttribute('disabled','disabled');
+                }
+            }
+        </script>
+    </div>
+{% endblock %}
